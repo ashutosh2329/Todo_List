@@ -6,13 +6,8 @@ const app = express();
 app.set('view engine', 'ejs');
 
 app.get("/", function(req, res){
-	var today = new Date();
-	if(today.getDay() === 6 || today.getDay() === 0){
-		res.sendFile(__dirname + "/index.html");
-	}
-	else{
-		res.send("oh uh! working day")
-	}
+	var day = new Date().toLocaleString('en-us', {  weekday: 'long' }); 
+	res.render("list", {whichDay:day});
 });
 
 
