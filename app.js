@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const app = express();
 app.set('view engine', 'ejs');
 let items = ["Eat","Sleep","Cook",];
+let workItem = [];
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static("public"));
@@ -16,14 +17,27 @@ app.get("/", function(req, res){
 		month: 'long'
 	};
 	let day = new Date().toLocaleDateString('en-us', options); 
-	res.render("list", {titleList:day, works:items});
+	res.render("list", {titleList:day, itemList:items});
 });
 
 app.post("/", function(request, response){
-    item = request.body.work;
-    items.push(item);
-	response.redirect("/");
+	let keyValue = request.body.listButton;
+	let item = request.body.work;
+	if(keyValue === "WorkList"){
+        workItem.push(item);
+	    response.redirect("/work");
+	}
+	else{
+        items.push(item);
+	    response.redirect("/");
+	}
 })
+    
+
+app.get("/work", function(request,response){
+	response.render("list", {titleList: "WorkList", itemList:workItem} )
+})
+
 
 
 app.listen(8000, function(){

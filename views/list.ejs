@@ -7,19 +7,19 @@
 </head>
 <body>
 	<div class="box" id="heading">
-	<h1>It is a <%= titleList %></h1>
+	<h1><%= titleList %></h1>
 </div>
          	<div class="box">
 
-         	<% for(var i=0; i<works.length; i++) { %>
+         	<% for(var i=0; i<itemList.length; i++) { %>
          	<div class="item">
          		<input type="checkbox">
-         	<p><%= works[i] %></p>
+         	<p><%= itemList[i] %></p>
          </div>
          <% } %>
          <form class="item" action="/" method="POST">
 		<input type="text" name="work" placeholder="New item" autocomplete="off">
-		<button type="submit" name="button">+</button>
+		<button type="submit" name="listButton" value=<%= titleList %>>+</button>
 	</form>
      </div>
          
