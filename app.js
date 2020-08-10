@@ -39,6 +39,11 @@ app.get("/work", function(request,response){
 })
 
 
+app.get("/about", function(request,response){
+	response.render("about");
+})
+
+
 
 app.listen(8000, function(){
 	console.log("server is live at 8000 port address");
