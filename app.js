@@ -28,51 +28,40 @@ const item3 = new Todo({
 
 const defaultItems = [item1,item2,item3]
 
-// Todo.insertMany(defaultItems, function(err){
-// 	if(err){
-// 		console.log(err);
-// 	}else
-// 	console.log("Data inserted");
-// });
-
-
-
-
-
 app.get("/", function(req, res){
 	let day = date.getDay();
 	Todo.find({}, function(err, foundItems){
-	if(err){
-		console.log(err);
-	}else
-	{
-		res.render("list", {titleList:day, itemList:foundItems});
+	if(foundItems.length === 0){
+		Todo.insertMany(defaultItems, function(err){
+			if(err){
+				console.log(err);
+			}else
+			console.log("Data inserted");
+		});
 	}
+	
+		res.render("list", {titleList:day, itemList:foundItems});
+	
 });
 });
 
 app.post("/", function(request, response){
 	let keyValue = request.body.listButton;
-	let item = request.body.work;
-	if(keyValue === "WorkList"){
-        workItem.push(item);
-	    response.redirect("/work");
-	}
-	else{
-        items.push(item);
-	    response.redirect("/");
-	}
-})
-    
-
-app.get("/work", function(request,response){
+	const itemName = request.body.work;
+	const item = new Todo({
+	name: itemName,
+	});
+	item.save();
+	response.redirect("/");
+});
+	app.get("/work", function(request,response){
 	response.render("list", {titleList: "WorkList", itemList:workItem} )
-})
+});
 
 
 app.get("/about", function(request,response){
 	response.render("about");
-})
+});
 
 
 
