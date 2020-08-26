@@ -2,19 +2,53 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const date = require(__dirname + "/date.js");
+const mongoose = require("mongoose");
 
 const app = express();
-app.set('view engine', 'ejs');
-let items = ["Eat","Sleep","Cook",];
-let workItem = [];
-
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static("public"));
+app.set('view engine', 'ejs');
+mongoose.connect('mongodb://localhost:27017/noteMakerDB', {useNewUrlParser: true, useUnifiedTopology: true });
+
+const todoSchema = {
+  name: String
+};
+
+const Todo = mongoose.model('Todo', todoSchema);
+
+const item1 = new Todo({
+	name: "Welcome to Todo list"
+});
+const item2 = new Todo({
+	name: "For adding new task click on the +"
+});
+const item3 = new Todo({
+	name: "To remove click on check box"
+});
+
+const defaultItems = [item1,item2,item3]
+
+// Todo.insertMany(defaultItems, function(err){
+// 	if(err){
+// 		console.log(err);
+// 	}else
+// 	console.log("Data inserted");
+// });
+
+
+
+
 
 app.get("/", function(req, res){
 	let day = date.getDay();
-
-	res.render("list", {titleList:day, itemList:items});
+	Todo.find({}, function(err, foundItems){
+	if(err){
+		console.log(err);
+	}else
+	{
+		res.render("list", {titleList:day, itemList:foundItems});
+	}
+});
 });
 
 app.post("/", function(request, response){
