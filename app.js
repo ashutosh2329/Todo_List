@@ -45,6 +45,10 @@ app.get("/", function(req, res){
 });
 });
 
+app.get("/:customListName", function(req, res){
+	console.log(req.params.customListName);
+});
+
 app.post("/", function(request, response){
 	let keyValue = request.body.listButton;
 	const itemName = request.body.work;
@@ -54,8 +58,12 @@ app.post("/", function(request, response){
 	item.save();
 	response.redirect("/");
 });
-	app.get("/work", function(request,response){
-	response.render("list", {titleList: "WorkList", itemList:workItem} )
+
+app.post("/delete", function(req, res){
+	const removeId = req.body.checkbox;
+	Todo.findByIdAndRemove(removeId, function(err){
+		res.redirect("/");
+	})
 });
 
 
