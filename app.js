@@ -10,12 +10,24 @@ app.use(express.static("public"));
 app.set('view engine', 'ejs');
 mongoose.connect('mongodb://localhost:27017/noteMakerDB', {useNewUrlParser: true, useUnifiedTopology: true });
 
+let day = date.getDay();
+
+// todo schema and model
 const todoSchema = {
   name: String
 };
-
 const Todo = mongoose.model('Todo', todoSchema);
 
+
+// custome list schema and model
+const customListSchema = {
+	name: String,
+	itemsArray: [todoSchema]
+};
+const List = mongoose.model('List', customListSchema);
+
+
+// creating default work item
 const item1 = new Todo({
 	name: "Welcome to Todo list"
 });
@@ -25,11 +37,10 @@ const item2 = new Todo({
 const item3 = new Todo({
 	name: "To remove click on check box"
 });
-
 const defaultItems = [item1,item2,item3]
 
+// express route start
 app.get("/", function(req, res){
-	let day = date.getDay();
 	Todo.find({}, function(err, foundItems){
 	if(foundItems.length === 0){
 		Todo.insertMany(defaultItems, function(err){
@@ -46,24 +57,64 @@ app.get("/", function(req, res){
 });
 
 app.get("/:customListName", function(req, res){
-	console.log(req.params.customListName);
+	const listName = req.params.customListName;
+	List.findOne({name: listName}, function(err, result){
+		if(!result){
+			const list = new List({
+				name: listName,
+				itemsArray: defaultItems
+			});
+			list.save();
+			res.redirect("/" + listName);
+		}else{
+			res.render("list",{titleList:result.name, itemList:result.itemsArray});
+		}
+	})
+
+
 });
 
-app.post("/", function(request, response){
-	let keyValue = request.body.listButton;
-	const itemName = request.body.work;
+
+// post route
+app.post("/", function(req, res){
+	const listTitle = req.body.Button;
+	const itemName = req.body.work;
 	const item = new Todo({
 	name: itemName,
 	});
-	item.save();
-	response.redirect("/");
+	if(listTitle === day){
+		item.save();
+		res.redirect("/");
+	}else{
+		List.findOne({name:listTitle}, function(err, result){
+			if(!err){
+				result.itemsArray.push(item);
+				result.save();
+				res.redirect("/"+ listTitle);
+			}
+		})
+	}
+
 });
 
 app.post("/delete", function(req, res){
 	const removeId = req.body.checkbox;
-	Todo.findByIdAndRemove(removeId, function(err){
-		res.redirect("/");
-	})
+	const removeListTitle = req.body.listTitle;
+	if(removeListTitle === day){
+		Todo.findByIdAndRemove(removeId, function(err){
+			res.redirect("/");
+		});
+	}else{
+		List.findOneAndUpdate(
+			{name:removeListTitle},
+			{$pull: {itemsArray: {_id: removeId}}},
+			function(err, result){
+				if(!err){
+					res.redirect("/" + removeListTitle);
+				}
+			});
+	}
+
 });
 
 
