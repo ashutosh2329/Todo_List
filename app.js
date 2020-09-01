@@ -56,7 +56,7 @@ app.get("/", function(req, res){
 	
 });
 });
-
+// dynamic routing 
 app.get("/:customListName", function(req, res){
 	const listName = _.capitalize(req.params.customListName);
 	List.findOne({name: listName}, function(err, result){
@@ -97,7 +97,7 @@ app.post("/", function(req, res){
 	}
 
 });
-
+// post route for removing item
 app.post("/delete", function(req, res){
 	const removeId = req.body.checkbox;
 	const removeListTitle = req.body.listTitle;
@@ -118,7 +118,7 @@ app.post("/delete", function(req, res){
 
 });
 
-
+// get route for about page 
 app.get("/about", function(request,response){
 	response.render("about");
 });
