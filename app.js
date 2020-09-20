@@ -66,9 +66,8 @@ app.get("/:customListName", function(req, res){
 
 
 });
-
-
 // post route
+// home route
 app.post("/", function(req, res){
 	const listTitle = req.body.Button;
 	const itemName = req.body.work;
@@ -109,14 +108,11 @@ app.post("/delete", function(req, res){
 	}
 
 });
-
 // get route for about page 
 app.get("/about", function(request,response){
 	response.render("about");
 });
-
-
-
+// response route
 app.listen(8000, function(){
 	console.log("server is live at 8000 port address");
 });
