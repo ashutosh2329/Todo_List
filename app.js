@@ -15,16 +15,12 @@ const todoSchema = {
   name: String
 };
 const Todo = mongoose.model('Todo', todoSchema);
-
-
 // custome list schema and model
 const customListSchema = {
 	name: String,
 	itemsArray: [todoSchema]
 };
 const List = mongoose.model('List', customListSchema);
-
-
 // creating default work item
 const item1 = new Todo({
 	name: "Welcome to Todo list"
@@ -36,7 +32,6 @@ const item3 = new Todo({
 	name: "To remove click on check box"
 });
 const defaultItems = [item1,item2,item3]
-
 // express route start 
 app.get("/", function(req, res){
 	Todo.find({}, function(err, foundItems){
