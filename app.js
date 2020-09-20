@@ -1,18 +1,15 @@
-
+// requiring packages
 const express = require("express");
 const bodyParser = require("body-parser");
 const date = require(__dirname + "/date.js");
 const mongoose = require("mongoose");
 const _ = require("lodash");
-
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 mongoose.connect('mongodb://localhost:27017/noteMakerDB', {useNewUrlParser: true, useUnifiedTopology: true });
-
 let day = date.getDay();
-
 // todo schema and model
 const todoSchema = {
   name: String
@@ -40,7 +37,7 @@ const item3 = new Todo({
 });
 const defaultItems = [item1,item2,item3]
 
-// express route start
+// express route start 
 app.get("/", function(req, res){
 	Todo.find({}, function(err, foundItems){
 	if(foundItems.length === 0){
